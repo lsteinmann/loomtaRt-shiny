@@ -24,7 +24,9 @@ ui <- page_fluid(
       ),
       column(
         width = 12,
-        span("t.b.a.")
+        span("Upload yout own data. The CSV has to include at least two columns: 'weight' and 'width'."),
+        fileInput("uploadedData", "Choose CSV File",
+                  accept = c(".csv"))
       )
     )
   ),
@@ -42,9 +44,23 @@ ui <- page_fluid(
 server <- function(input, output) {
   raw_data <- reactiveVal(value = read.csv("data/demo_data.csv"))
 
-  plot_data <- reactiveVal()
+  # Update reactiveVal when file is uploaded
+  observeEvent(input$uploadedData, {
+    req(input$uploadedData)
+    upload <- read.csv(input$uploadedData$datapath)
 
-  observeEvent(input$warpTension, {
+    required_cols <- c("weight", "width")
+    validate(
+      need(
+        all(required_cols %in% colnames(upload)),
+        'Required columns missing: "weight", "width"'
+      )
+    )
+
+    raw_data(upload)
+  })
+
+  plot_data <- reactive({
     tmp <- raw_data()
     tmp$tplw <- get_threads_per_loom_weight(weight = tmp$weight, tension = input$warpTension)
 
@@ -52,7 +68,7 @@ server <- function(input, output) {
     tmp$assessment <- factor(tmp$assessment,
                              levels = c("impossible", "unlikely", "possible", "optimal"),
                              ordered = TRUE)
-    plot_data(tmp)
+    tmp
   })
 
   output$weightByAssessment <- renderPlotly({
