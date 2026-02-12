@@ -8,7 +8,7 @@ library(DT)
 
 library(loomtaRt)
 
-source("utils.R")
+source("R/utils.R")
 
 ui <- page_fluid(
   card(
