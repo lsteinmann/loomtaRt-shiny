@@ -3,9 +3,10 @@ library(bslib)
 library(dplyr)
 library(ggplot2)
 library(plotly)
-library(loomtaRt)
 library(data.table)
 library(DT)
+
+library(loomtaRt)
 
 source("utils.R")
 

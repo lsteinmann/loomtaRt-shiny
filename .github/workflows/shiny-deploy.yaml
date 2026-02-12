@@ -29,10 +29,6 @@ jobs:
         run: install.packages("rsconnect")
         shell: Rscript {0}
 
-      - name: Install loomtaRt
-        run: remotes::install_github("lsteinmann/loomtaRt")
-        shell: Rscript {0}
-
       - name: Authorize and deploy app
         env:
           # Provide your app name, account name, and server to be deployed below
